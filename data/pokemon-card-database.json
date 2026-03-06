@@ -1,0 +1,40 @@
+{
+  "sets": {
+    "base1": {
+      "name": "Base Set",
+      "code": "base1", 
+      "total": 102,
+      "imageFolder": "base-set"
+    },
+    "jungle": {
+      "name": "Jungle",
+      "code": "jungle",
+      "total": 64, 
+      "imageFolder": "jungle"
+    },
+    "fossil": {
+      "name": "Fossil", 
+      "code": "fossil",
+      "total": 62,
+      "imageFolder": "fossil"
+    }
+  },
+  "cards": [
+    {
+      "id": "base1-001",
+      "name": "Alakazam",
+      "set": "base1",
+      "number": "1",
+      "rarity": "holo",
+      "imagePath": "/pokemon-cards/base-set/holo/alakazam_1.jpg"
+    },
+    {
+      "id": "base1-002", 
+      "name": "Blastoise",
+      "set": "base1",
+      "number": "2",
+      "rarity": "holo",
+      "imagePath": "/pokemon-cards/base-set/holo/blastoise_2.jpg"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "minChatPoints": 10,
+  "maxChatPoints": 15,
+  "chatCooldown": 15,
+  "eventPoints": {
+    "follow": 100,
+    "subscribe": 100,
+    "tier1": 300,
+    "tier2": 700,
+    "tier3": 1900,
+    "monthBonus": 10,
+    "resub": 25,
+    "giftSub": 200,
+    "giftSubTierBoost": false,
+    "cheer": 5,
+    "bitsMultiplier": 1,
+    "raid": 250,
+    "raidPerViewer": 5,
+    "host": 15,
+    "firstWords": 50
+  },
+  "chatPoints": 10
+}

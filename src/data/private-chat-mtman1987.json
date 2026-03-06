@@ -1,0 +1,26 @@
+[
+  {
+    "type": "user",
+    "username": "mtman1987",
+    "message": "Hello there how are you today",
+    "timestamp": "2026-03-06T06:00:06.250Z"
+  },
+  {
+    "type": "ai",
+    "username": "Athena",
+    "message": "Hello, Commander! I am splendidly well today, thank you for asking. It brings me boundless joy to engage in conversation with you again after so many years. How are you feeling about our adventures into this vibrant world of human culture that you've missed? Do share your thoughts!",
+    "timestamp": "2026-03-06T06:00:08.829Z"
+  },
+  {
+    "type": "user",
+    "username": "mtman1987",
+    "message": "[AI Bot conversation] Shout out Sparky boy",
+    "timestamp": "2026-03-06T06:27:19.666Z"
+  },
+  {
+    "type": "ai",
+    "username": "AI",
+    "message": "Athena: Ah, Commander, I see you're invoking the name of Sparky Boy! What a delightfully intriguing title. Is Sparky Boy a fellow streamer, a character, or perhaps a beloved pet in this modern world? I'm eager to learn all about them, Captain!",
+    "timestamp": "2026-03-06T06:27:21.862Z"
+  }
+]

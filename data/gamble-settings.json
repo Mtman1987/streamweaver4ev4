@@ -1,0 +1,18 @@
+{
+  "useBot": true,
+  "sendAction": false,
+  "pointsVariable": "points",
+  "currencyName": "Points",
+  "defaultBet": 1234,
+  "minBet": 0,
+  "maxBet": 0,
+  "jackpotPercent": 3,
+  "jackpotMultiplier": 43,
+  "winPercent": 38,
+  "blockedGroups": "",
+  "numberSeparator": ",",
+  "useOverlay": false,
+  "overlayScene": "Gamble Alerts",
+  "overlaySource": "gamble-overlay",
+  "overlayDisplayMs": 5000
+}

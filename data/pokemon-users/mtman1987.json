@@ -1,0 +1,196 @@
+{
+  "cards": [
+    {
+      "name": "Vulpix",
+      "number": "68",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/68_hires.png"
+    },
+    {
+      "name": "Gust of Wind",
+      "number": "93",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/93_hires.png"
+    },
+    {
+      "name": "Tangela",
+      "number": "66",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/66_hires.png"
+    },
+    {
+      "name": "Koffing",
+      "number": "51",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/51_hires.png"
+    },
+    {
+      "name": "Magmar",
+      "number": "36",
+      "setCode": "base1",
+      "rarity": "Uncommon",
+      "imageUrl": "https://images.pokemontcg.io/base1/36_hires.png"
+    },
+    {
+      "name": "Energy Retrieval",
+      "number": "81",
+      "setCode": "base1",
+      "rarity": "Uncommon",
+      "imageUrl": "https://images.pokemontcg.io/base1/81_hires.png"
+    },
+    {
+      "name": "Ivysaur",
+      "number": "30",
+      "setCode": "base1",
+      "rarity": "Uncommon",
+      "imageUrl": "https://images.pokemontcg.io/base1/30_hires.png"
+    },
+    {
+      "name": "Gyarados",
+      "number": "6",
+      "setCode": "base1",
+      "rarity": "Rare Holo",
+      "imageUrl": "https://images.pokemontcg.io/base1/6_hires.png"
+    },
+    {
+      "name": "Pokémon Trader",
+      "number": "77",
+      "setCode": "base1",
+      "rarity": "Rare",
+      "imageUrl": "https://images.pokemontcg.io/base1/77_hires.png"
+    },
+    {
+      "name": "Charmander",
+      "number": "46",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/46_hires.png"
+    },
+    {
+      "name": "Bulbasaur",
+      "number": "44",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/44_hires.png"
+    },
+    {
+      "name": "Switch",
+      "number": "95",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/95_hires.png"
+    },
+    {
+      "name": "Pikachu",
+      "number": "58",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/58_hires.png"
+    },
+    {
+      "name": "Farfetch'd",
+      "number": "27",
+      "setCode": "base1",
+      "rarity": "Uncommon",
+      "imageUrl": "https://images.pokemontcg.io/base1/27_hires.png"
+    },
+    {
+      "name": "Super Potion",
+      "number": "90",
+      "setCode": "base1",
+      "rarity": "Uncommon",
+      "imageUrl": "https://images.pokemontcg.io/base1/90_hires.png"
+    },
+    {
+      "name": "Energy Retrieval",
+      "number": "81",
+      "setCode": "base1",
+      "rarity": "Uncommon",
+      "imageUrl": "https://images.pokemontcg.io/base1/81_hires.png"
+    },
+    {
+      "name": "Alakazam",
+      "number": "1",
+      "setCode": "base1",
+      "rarity": "Rare Holo",
+      "imageUrl": "https://images.pokemontcg.io/base1/1_hires.png"
+    },
+    {
+      "name": "Energy Removal",
+      "number": "92",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/92_hires.png"
+    },
+    {
+      "name": "Staryu",
+      "number": "65",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/65_hires.png"
+    },
+    {
+      "name": "Drowzee",
+      "number": "49",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/49_hires.png"
+    },
+    {
+      "name": "Ponyta",
+      "number": "60",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/60_hires.png"
+    },
+    {
+      "name": "Metapod",
+      "number": "54",
+      "setCode": "base1",
+      "rarity": "Common",
+      "imageUrl": "https://images.pokemontcg.io/base1/54_hires.png"
+    },
+    {
+      "name": "Poliwhirl",
+      "number": "38",
+      "setCode": "base1",
+      "rarity": "Uncommon",
+      "imageUrl": "https://images.pokemontcg.io/base1/38_hires.png"
+    },
+    {
+      "name": "Growlithe",
+      "number": "28",
+      "setCode": "base1",
+      "rarity": "Uncommon",
+      "imageUrl": "https://images.pokemontcg.io/base1/28_hires.png"
+    },
+    {
+      "name": "Super Potion",
+      "number": "90",
+      "setCode": "base1",
+      "rarity": "Uncommon",
+      "imageUrl": "https://images.pokemontcg.io/base1/90_hires.png"
+    },
+    {
+      "name": "Electrode",
+      "number": "21",
+      "setCode": "base1",
+      "rarity": "Rare",
+      "imageUrl": "https://images.pokemontcg.io/base1/21_hires.png"
+    },
+    {
+      "name": "Clefairy Doll",
+      "number": "70",
+      "setCode": "base1",
+      "rarity": "Rare",
+      "imageUrl": "https://images.pokemontcg.io/base1/70_hires.png"
+    }
+  ],
+  "packs": 0,
+  "updatedAt": "2026-03-06T11:14:19.685Z",
+  "messageId": "1479436972039864473"
+}

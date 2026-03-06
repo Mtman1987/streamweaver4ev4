@@ -1,0 +1,27 @@
+[
+  {
+    "name": "first",
+    "points": 100,
+    "message": "Congrats on being first!"
+  },
+  {
+    "name": "hydrate",
+    "points": -100,
+    "message": "Stay hydrated! 💧"
+  },
+  {
+    "name": "stretch",
+    "points": -100,
+    "message": "Time to stretch! 🤸"
+  },
+  {
+    "name": "Partner Check Ins",
+    "points": 10,
+    "message": ""
+  },
+  {
+    "name": "PokePack",
+    "points": 1500,
+    "message": "POKeMON"
+  }
+]

@@ -1,0 +1,132 @@
+{
+  "active": true,
+  "squares": [
+    {
+      "phrase": "GG",
+      "claimedBy": "ATHENA",
+      "isBlocked": true
+    },
+    {
+      "phrase": "Hype!",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "F in chat",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Poggers",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "LUL",
+      "claimedBy": "ATHENA",
+      "isBlocked": true
+    },
+    {
+      "phrase": "First death",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Epic win",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Streamer laughs",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Drinks water",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Pet appears",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Raid incoming",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "New sub",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "FREE SPACE",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Donation alert",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "New follower",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Lag spike",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Chat spams emotes",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Tells a story",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Sings along",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Dance break",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Game crashes",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Viewer count doubles",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Emote only mode",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Inside joke",
+      "claimedBy": null,
+      "isBlocked": false
+    },
+    {
+      "phrase": "Gets emotional",
+      "claimedBy": null,
+      "isBlocked": false
+    }
+  ],
+  "phraseTimers": {},
+  "lastUpdate": 1769998461362
+}

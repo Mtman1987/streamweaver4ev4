@@ -1,0 +1,9 @@
+{
+  "type": "gamble",
+  "text": "@tigerflakes420, The galaxy watches. Will you roll once more? Type !yes or !no within 5 minutes.",
+  "payload": {
+    "user": "tigerflakes420",
+    "phase": "double_prompt"
+  },
+  "timestamp": 1772158434717
+}
