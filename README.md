@@ -16,16 +16,21 @@ This repo is currently optimized for **running locally on your streaming PC** (W
 
 - Install **Node.js (LTS)**
 - Download this project (zip or git clone)
-- In the project folder:
+- In the project folder, run the setup script:
 
 ```powershell
-npm install
+setup.bat
 ```
+
+This will:
+- Copy `.env.example` to `.env`
+- Create required config files in `tokens/` folder
+- Install dependencies with `npm install`
 
 ### 2) Configure environment
 
-1. Copy `.env.example` to `.env`
-2. Fill in the keys you plan to use (start minimal; you can add later).
+1. Edit `.env` and fill in the keys you plan to use (start minimal; you can add later)
+2. Edit `tokens/user-config.json` with your Twitch username and Discord channel IDs
 
 Important notes:
 
