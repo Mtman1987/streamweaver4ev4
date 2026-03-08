@@ -28,7 +28,13 @@ export function DiscordChannelSettings() {
   useEffect(() => {
     fetch('/api/discord/channels')
       .then(res => res.json())
-      .then(setSettings)
+      .then((data) => {
+        setSettings({
+          logChannelId: typeof data?.logChannelId === 'string' ? data.logChannelId : '',
+          shoutoutChannelId: typeof data?.shoutoutChannelId === 'string' ? data.shoutoutChannelId : '',
+          discordBridgeEnabled: Boolean(data?.discordBridgeEnabled),
+        });
+      })
       .catch(console.error);
   }, []);
 
@@ -98,7 +104,7 @@ export function DiscordChannelSettings() {
           <Label htmlFor="logChannel">Chat Log Channel ID</Label>
           <Input
             id="logChannel"
-            value={settings.logChannelId}
+            value={settings.logChannelId || ''}
             onChange={(e) => setSettings(prev => ({ ...prev, logChannelId: e.target.value }))}
             placeholder="1340315377774755890"
           />
@@ -115,7 +121,7 @@ export function DiscordChannelSettings() {
           <Label htmlFor="shoutoutChannel">Shoutout Channel ID</Label>
           <Input
             id="shoutoutChannel"
-            value={settings.shoutoutChannelId}
+            value={settings.shoutoutChannelId || ''}
             onChange={(e) => setSettings(prev => ({ ...prev, shoutoutChannelId: e.target.value }))}
             placeholder="1341946492696526858"
           />
