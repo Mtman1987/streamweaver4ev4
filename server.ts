@@ -43,7 +43,6 @@ function broadcast(message: object) {
 (global as any).broadcast = broadcast;
 (global as any).botPersonality = "You are a helpful AI assistant.";
 (global as any).botVoice = "Algieba";
-(global as any).botName = "Athena";
 
 async function startServer() {
     try {
