@@ -36,7 +36,6 @@ export async function POST(request: NextRequest) {
     const username = (body.username || '').trim();
     const message = (body.message || '').trim();
     const personality = body.personality;
-    const historyLimit = 50;
 
     if (!username || !message) {
       console.log('[AI Chat Memory] Missing required fields');
@@ -46,33 +45,74 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const edenaiKey = process.env.EDENAI_API_KEY;
+    if (!edenaiKey) {
+      return NextResponse.json(
+        { error: 'Server missing EdenAI API key' },
+        { status: 500 }
+      );
+    }
+
     const aiConfig = getAIConfig();
-    const history = await readPublicChatMessages(historyLimit);
+    const history = await readPublicChatMessages(20);
 
     const systemPrompt = personality
-      ? `${personality}\n\nCRITICAL RULES - YOU MUST FOLLOW THESE:\n- NEVER prefix your response with "${aiConfig.botName}:" or your name\n- Respond directly without any labels\n- The streamer's username is "${username}" - they are your ${aiConfig.personalityName}\n- Address the streamer as "${aiConfig.personalityName}"\n- Address everyone else in chat as "Captain"\n- MAXIMUM 400 characters per response - this is STRICT\n- Be concise, punchy, and engaging - no long explanations\n- If topic needs more detail, end with "Want more tips?" or similar`
-      : `You are ${aiConfig.botName}, a helpful AI assistant. Never prefix responses with your name. STRICT 400 character limit - be concise.`;
+      ? `You are an AI assistant with the following personality:\n${personality}`
+      : `You are a helpful AI assistant for a streamer. Your name is ${aiConfig.botName}.`;
 
     const historyText = formatHistory(history);
 
-    let userMessage = message;
-    if (historyText) {
-      userMessage = `${historyText}\n\nLatest message from ${username} (your ${aiConfig.personalityName}): ${message}\n\nRespond directly without any prefix:`;
-    } else {
-      userMessage = `Message from ${username} (your ${aiConfig.personalityName}): ${message}\n\nRespond directly without any prefix:`;
+    const promptParts = [
+      systemPrompt,
+      'You are having a conversation. Respond naturally and conversationally.',
+      historyText,
+      `Latest message from ${username}: ${message}`,
+      `Respond as ${aiConfig.botName}:`,
+    ].filter(Boolean);
+
+    const prompt = promptParts.join('\n\n');
+
+    const userEntry = {
+      type: 'user' as const,
+      username,
+      message,
+      timestamp: new Date().toISOString(),
+    };
+
+    console.log('[AI Chat Memory] Saving user message:', userEntry);
+    await appendPublicChatMessages([userEntry]);
+
+    // Use EdenAI API with hardcoded model like private chat
+    const response = await fetch('https://api.edenai.run/v3/llm/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${edenaiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'openai/gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: prompt }
+        ],
+        stream: false
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[AI Chat Memory] EdenAI error:', response.status, errorText);
+      return NextResponse.json(
+        { response: 'Sorry, I had trouble processing that. Could you rephrase?' },
+        { status: 200 }
+      );
     }
 
-    let responseText = await generateAIResponse(userMessage, systemPrompt);
+    const data = await response.json();
+    let responseText = data.choices?.[0]?.message?.content?.trim() || '';
 
-    // If response failed and we have history, try again without history
-    if (responseText === 'AI response failed' && historyText) {
-      console.log('[AI Chat Memory] Retrying without history due to content filter');
-      const simpleMessage = `Message from ${username} (your ${aiConfig.personalityName}): ${message}\n\nRespond directly without any prefix:`;
-      responseText = await generateAIResponse(simpleMessage, systemPrompt);
-    }
-
-    if (!responseText || responseText === 'AI response failed') {
-      console.log('[AI Chat Memory] AI returned empty or failed response');
+    if (!responseText) {
+      console.log('[AI Chat Memory] AI returned empty response');
       return NextResponse.json(
         { response: 'Sorry, I had trouble processing that. Could you rephrase?' },
         { status: 200 }
@@ -82,22 +122,15 @@ export async function POST(request: NextRequest) {
     // Remove bot name prefix if present
     const cleanResponse = responseText.replace(new RegExp(`^(${aiConfig.botName}|${aiConfig.botName.toLowerCase()}):\\s*`, 'i'), '').trim();
 
-    // Save both messages to public chat file
-    const timestamp = new Date().toISOString();
-    await appendPublicChatMessages([
-      {
-        type: 'user',
-        username,
-        message,
-        timestamp
-      },
-      {
-        type: 'ai',
-        username: aiConfig.botName,
-        message: cleanResponse,
-        timestamp
-      }
-    ]);
+    const aiEntry = {
+      type: 'ai' as const,
+      username: aiConfig.botName,
+      message: cleanResponse,
+      timestamp: new Date().toISOString(),
+    };
+
+    console.log('[AI Chat Memory] Saving AI response:', aiEntry);
+    await appendPublicChatMessages([aiEntry]);
 
     console.log('[AI Chat Memory] Successfully saved messages to public chat file');
     return NextResponse.json({ response: cleanResponse });
