@@ -23,6 +23,7 @@
     "electron:pack": "npm run build && electron-builder",
     "app:start": "npm run electron:dev",
     "setup": "npm run health-check",
+    "postinstall": "node scripts/bootstrap-runtime.js",
     "streamweaver": "concurrently --names \"NEXT,SERVER,ELECTRON\" --prefix-colors \"blue,green,magenta\" \"npm:dev:next\" \"npm:dev:ws\" \"npm:electron:dev\"",
     "streamweaver:simple": "concurrently --names \"SW2-NEXT,SW2-SERVER\" --prefix-colors \"blue,green\" \"npm:dev:next\" \"npm:dev:ws\"",
     "genkit:dev": "echo 'Genkit disabled - not needed for core functionality'"
