@@ -67,19 +67,20 @@ async function saveToDiscord(username: string, data: UserCollection): Promise<vo
         console.log('[Pokemon Storage] Could not delete old message:', err);
       }
     } else {
-      // Try to find and delete old message by parsing content
+      // Try to find and delete ALL old messages for this user
       const messages = await getChannelMessages(STORAGE_CHANNEL_ID, 100);
+      const fileName = `${username.toLowerCase()}.json`;
       for (const msg of messages) {
-        if (msg.content?.includes(`[ID:`) && msg.content?.includes(`User: ${username}`)) {
-          const idMatch = msg.content.match(/\[ID:([a-zA-Z0-9]+)\]/);
-          if (idMatch) {
-            try {
-              await deleteMessage(STORAGE_CHANNEL_ID, msg.id);
-              console.log(`[Pokemon Storage] Deleted old message by ID search: ${msg.id}`);
-            } catch (err) {
-              console.log('[Pokemon Storage] Could not delete old message:', err);
-            }
-            break;
+        // Check if message has the user's file attachment OR mentions the user
+        const hasAttachment = msg.attachments?.some((a: any) => a.name === fileName);
+        const hasUserMention = msg.content?.includes(`User: ${username}`);
+        
+        if (hasAttachment || hasUserMention) {
+          try {
+            await deleteMessage(STORAGE_CHANNEL_ID, msg.id);
+            console.log(`[Pokemon Storage] Deleted old message: ${msg.id}`);
+          } catch (err) {
+            console.log('[Pokemon Storage] Could not delete old message:', err);
           }
         }
       }

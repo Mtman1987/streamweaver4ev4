@@ -7,6 +7,7 @@ interface Card {
   name: string;
   rarity: string;
   setCode: string;
+  imageUrl: string;
   id?: string;
 }
 
@@ -129,7 +130,7 @@ export default function PokemonPackOverlay() {
                 </div>
                 <div className="absolute inset-0 backface-hidden rounded-xl bg-white shadow-2xl" style={{ transform: 'rotateY(180deg)' }}>
                   <img
-                    src={`/api/pokemon-card-image?set=${card.setCode}&number=${card.number}&name=${encodeURIComponent(card.name)}`}
+                    src={card.imageUrl}
                     alt={card.name}
                     className="w-full h-full object-cover rounded-xl"
                   />
@@ -169,7 +170,7 @@ export default function PokemonPackOverlay() {
               <div className="absolute inset-0 backface-hidden rounded-xl bg-white shadow-2xl" style={{ transform: 'rotateY(180deg)' }}>
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-yellow-400 via-transparent to-purple-400 opacity-30 animate-pulse" />
                 <img
-                  src={`/api/pokemon-card-image?set=${rareCard.setCode}&number=${rareCard.number}&name=${encodeURIComponent(rareCard.name)}`}
+                  src={rareCard.imageUrl}
                   alt={rareCard.name}
                   className="w-full h-full object-cover rounded-xl"
                 />

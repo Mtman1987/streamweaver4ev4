@@ -42,7 +42,7 @@ export async function handleTwitchMessage(channel: string, tags: any, message: s
     const displayName = tags['display-name'] || username;
     
     // Prevent duplicate processing with more specific ID
-    const messageId = `${tags.id || 'no-id'}-${username}-${Date.now()}-${message.slice(0, 20)}`;
+    const messageId = `${tags.id || 'no-id'}-${username}-${message.slice(0, 50)}`;
     
     if (processedMessages.has(messageId)) {
         console.log(`[Dispatcher] Skipping duplicate message: ${messageId}`);
@@ -1302,8 +1302,35 @@ If no good match, respond with: Could not find matching user`;
                         console.log('[Dispatcher] Chat-with-memory reply:', reply);
                         
                         if (reply) {
-                            // Just send the chat message - TTS will be handled by message listener
+                            // Send the chat message
                             await sendChatMessage(reply, 'bot').catch(() => {});
+                            
+                            // Generate TTS for AI response
+                            try {
+                                const { textToSpeech } = await import('../ai/flows/text-to-speech');
+                                const ttsResult = await textToSpeech({ text: reply, voice: 'Algieba' });
+                                
+                                if (ttsResult.audioDataUri) {
+                                    const useTTSPlayer = process.env.USE_TTS_PLAYER !== 'false';
+                                    
+                                    if (useTTSPlayer) {
+                                        await fetch('http://127.0.0.1:3100/api/tts/current', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ audioUrl: ttsResult.audioDataUri })
+                                        }).catch(err => console.error('[Dispatcher] Failed to send TTS to player:', err));
+                                    }
+                                    
+                                    if (typeof (global as any).broadcast === 'function') {
+                                        (global as any).broadcast({
+                                            type: 'play-tts',
+                                            payload: { audioDataUri: ttsResult.audioDataUri }
+                                        });
+                                    }
+                                }
+                            } catch (err) {
+                                console.error('[Dispatcher] TTS generation failed for AI response:', err);
+                            }
                         }
                     } else {
                         const errorText = await response.text();
