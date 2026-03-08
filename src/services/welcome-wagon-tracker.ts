@@ -6,7 +6,8 @@ interface WelcomeWagonData {
   excludedUsers: string[];
 }
 
-const WELCOME_WAGON_PATH = resolve(process.cwd(), 'tokens', 'welcome-wagon.json');
+const WELCOME_WAGON_TRACKER_PATH = resolve(process.cwd(), 'tokens', 'welcome-wagon-tracker.json');
+const LEGACY_WELCOME_WAGON_PATH = resolve(process.cwd(), 'tokens', 'welcome-wagon.json');
 const BLACKLISTED_BOTS = [
   'streamelements',
   'nightbot',
@@ -26,9 +27,7 @@ const BLACKLISTED_BOTS = [
 ];
 
 async function loadWelcomeWagonData(): Promise<WelcomeWagonData> {
-  try {
-    const raw = await fs.readFile(WELCOME_WAGON_PATH, 'utf-8');
-    const parsed = JSON.parse(raw) as Partial<WelcomeWagonData> | null;
+  const normalize = (parsed: Partial<WelcomeWagonData> | null): WelcomeWagonData => {
     const shoutouts =
       parsed?.shoutouts && typeof parsed.shoutouts === 'object'
         ? parsed.shoutouts
@@ -36,16 +35,32 @@ async function loadWelcomeWagonData(): Promise<WelcomeWagonData> {
     const excludedUsers = Array.isArray(parsed?.excludedUsers)
       ? parsed!.excludedUsers.filter((u): u is string => typeof u === 'string').map((u) => u.toLowerCase())
       : [];
-
     return { shoutouts, excludedUsers };
+  };
+
+  try {
+    const raw = await fs.readFile(WELCOME_WAGON_TRACKER_PATH, 'utf-8');
+    const parsed = JSON.parse(raw) as Partial<WelcomeWagonData> | null;
+    return normalize(parsed);
   } catch {
-    return { shoutouts: {}, excludedUsers: [] };
+    // Backward compatibility: if legacy file had tracker fields, read and migrate them.
+    try {
+      const legacyRaw = await fs.readFile(LEGACY_WELCOME_WAGON_PATH, 'utf-8');
+      const legacyParsed = JSON.parse(legacyRaw) as Partial<WelcomeWagonData> | null;
+      const normalized = normalize(legacyParsed);
+      if (Object.keys(normalized.shoutouts).length > 0 || normalized.excludedUsers.length > 0) {
+        await saveWelcomeWagonData(normalized);
+      }
+      return normalized;
+    } catch {
+      return { shoutouts: {}, excludedUsers: [] };
+    }
   }
 }
 
 async function saveWelcomeWagonData(data: WelcomeWagonData): Promise<void> {
   await fs.mkdir(resolve(process.cwd(), 'tokens'), { recursive: true });
-  await fs.writeFile(WELCOME_WAGON_PATH, JSON.stringify(data, null, 2));
+  await fs.writeFile(WELCOME_WAGON_TRACKER_PATH, JSON.stringify(data, null, 2));
 }
 
 export async function canShoutoutUser(username: string): Promise<boolean> {

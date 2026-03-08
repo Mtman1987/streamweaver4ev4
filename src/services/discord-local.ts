@@ -22,7 +22,21 @@ async function discordRequest(endpoint: string, options: RequestInit = {}) {
         throw new Error(`Discord API error: ${response.status} ${error}`);
     }
 
-    return response.json();
+    // Some Discord endpoints (e.g. DELETE) return 204 with no body.
+    if (response.status === 204) {
+        return null;
+    }
+
+    const text = await response.text();
+    if (!text) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(text);
+    } catch {
+        return text;
+    }
 }
 
 export async function sendDiscordMessage(channelId: string, message: string): Promise<void> {

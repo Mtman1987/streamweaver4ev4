@@ -73,9 +73,15 @@ export async function openPack(setNumber: number, username: string) {
   
   // Broadcast pack opening to overlay
   if (typeof (global as any).broadcast === 'function') {
+    const payload = { pack, setName: setInfo.name, username };
+    // Emit both event names for compatibility with older/newer overlays.
     (global as any).broadcast({
       type: 'pokemon-pack-open',
-      payload: { pack, setName: setInfo.name, username }
+      payload
+    });
+    (global as any).broadcast({
+      type: 'pokemon-pack-opened',
+      payload
     });
   }
   

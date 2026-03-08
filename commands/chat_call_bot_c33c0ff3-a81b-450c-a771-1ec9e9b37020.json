@@ -1,7 +1,7 @@
 {
   "id": "c33c0ff3-a81b-450c-a771-1ec9e9b37020",
   "name": "chat call bot",
-  "command": "(?i).*@?athenabot87.*",
+  "command": "(?i).*@?{{BOT_NAME}}.*",
   "enabled": false,
   "description": "Imported from Streamer.bot: chat call bot",
   "cooldown": {

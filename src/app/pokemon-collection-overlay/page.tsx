@@ -11,10 +11,12 @@ export default function PokemonCollectionOverlay() {
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === 'pokemon-collection-show') {
-        console.log('[Collection Overlay] Received cards:', data.cards);
-        setUsername(data.username);
-        setCards(data.cards || []);
-        runAnimation(data.cards || []);
+        const payload = data.payload || data;
+        const receivedCards = payload.cards || [];
+        console.log('[Collection Overlay] Received cards:', receivedCards);
+        setUsername(payload.username || '');
+        setCards(receivedCards);
+        runAnimation(receivedCards);
       }
     };
 

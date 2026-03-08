@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { Command, CommandMode, CommandLocation, GrantType } from './types';
+import { getAIConfig } from '@/services/ai-provider';
 
 export class CommandManager {
   private commands: Map<string, Command> = new Map();
@@ -104,7 +105,14 @@ export class CommandManager {
 
   private matchesCommand(command: Command, message: string): boolean {
     const text = command.caseSensitive ? message : message.toLowerCase();
-    const trigger = command.caseSensitive ? command.command : command.command.toLowerCase();
+    let trigger = command.caseSensitive ? command.command : command.command.toLowerCase();
+
+    // Replace {{BOT_NAME}} placeholder with actual bot name from config
+    if (trigger.includes('{{bot_name}}')) {
+      const aiConfig = getAIConfig();
+      const botName = aiConfig.botName || 'AI Bot';
+      trigger = trigger.replace(/\{\{bot_name\}\}/gi, botName);
+    }
 
     if (command.mode === CommandMode.REGEX) {
       try {
