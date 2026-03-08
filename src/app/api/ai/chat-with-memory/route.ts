@@ -62,13 +62,20 @@ export async function POST(request: NextRequest) {
       userMessage = `Message from ${username} (your ${aiConfig.personalityName}): ${message}\n\nRespond directly without any prefix:`;
     }
 
-    const responseText = await generateAIResponse(userMessage, systemPrompt);
+    let responseText = await generateAIResponse(userMessage, systemPrompt);
 
-    if (!responseText) {
-      console.log('[AI Chat Memory] AI returned empty response');
+    // If response failed and we have history, try again without history
+    if (responseText === 'AI response failed' && historyText) {
+      console.log('[AI Chat Memory] Retrying without history due to content filter');
+      const simpleMessage = `Message from ${username} (your ${aiConfig.personalityName}): ${message}\n\nRespond directly without any prefix:`;
+      responseText = await generateAIResponse(simpleMessage, systemPrompt);
+    }
+
+    if (!responseText || responseText === 'AI response failed') {
+      console.log('[AI Chat Memory] AI returned empty or failed response');
       return NextResponse.json(
-        { error: 'AI returned an empty response' },
-        { status: 502 }
+        { response: 'Sorry, I had trouble processing that. Could you rephrase?' },
+        { status: 200 }
       );
     }
 

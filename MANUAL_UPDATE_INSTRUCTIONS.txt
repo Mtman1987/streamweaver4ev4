@@ -1,0 +1,20 @@
+# MANUAL FILE UPDATE
+
+Your friend needs to REPLACE these 2 files:
+
+## File 1: src/lib/user-config.ts
+Copy from: `YOUR_REPO/src/lib/user-config.ts`
+To: `HIS_REPO/src/lib/user-config.ts`
+
+## File 2: src/services/ai-provider.ts  
+Copy from: `YOUR_REPO/src/services/ai-provider.ts`
+To: `HIS_REPO/src/services/ai-provider.ts`
+
+Then run FORCE-CLEAR-CACHE.bat again.
+
+## OR - Easier method:
+Just ZIP these 2 files and send them to him via Discord/email:
+- src/lib/user-config.ts
+- src/services/ai-provider.ts
+
+He extracts and overwrites his files, then runs FORCE-CLEAR-CACHE.bat
