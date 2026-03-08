@@ -240,8 +240,8 @@ export default function BotFunctionsPage() {
         setAudioUrl(null);
 
         try {
-            // Use /api/tts-flow instead of direct textToSpeech function
-            const response = await fetch('/api/tts-flow', {
+            // Use the server TTS endpoint
+            const response = await fetch('/api/tts', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text: ttsText, voice: ttsVoice })

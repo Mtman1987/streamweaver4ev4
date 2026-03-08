@@ -14,6 +14,7 @@ import { handleBingoCard, handleBingoPhrases, handleClaimSquare, handleNewBingoG
 import { startBRB, stopBRB, toggleClipMode, getClipMode } from './brb-clips';
 import { handleGamble as handleClassicGamble, handleRoll, handleDouble } from './gamble/classic-gamble';
 import { getPoints, setPoints } from './points';
+import { getAIConfig } from './ai-provider';
 import * as fs from 'fs/promises';
 import { resolve } from 'path';
 
@@ -93,13 +94,13 @@ export async function handleTwitchMessage(channel: string, tags: any, message: s
     const isCommand = actualMessage.startsWith('!');
     
     // Get usernames from user config
-    let botUsername = 'athenabot87';
-    let broadcasterUsername = 'mtman1987';
+    let botUsername = 'streamweaverbot';
+    let broadcasterUsername = 'broadcaster';
     try {
         const { readUserConfigSync } = require('../lib/user-config');
         const config = readUserConfigSync();
-        botUsername = config.TWITCH_BOT_USERNAME || 'athenabot87';
-        broadcasterUsername = config.TWITCH_BROADCASTER_USERNAME || 'mtman1987';
+        botUsername = config.TWITCH_BOT_USERNAME || 'streamweaverbot';
+        broadcasterUsername = config.TWITCH_BROADCASTER_USERNAME || 'broadcaster';
     } catch {}
     
     const isBot = actualUsername.toLowerCase() === botUsername.toLowerCase();
@@ -905,41 +906,16 @@ export async function handleTwitchMessage(channel: string, tags: any, message: s
         
         // Handle !commands
         if (actualMessage.toLowerCase() === '!commands') {
-            const cmds = [
-                '🎮 Fun: !hug, !boop, !cuddle, !dance, !highfive, !lurk, !unlurk',
-                '🎲 Games: !gamble, !roll, !double, !coinflip',
-                '🃏 Pokemon: !pack, !collection, !show <card>, !trade, !offer, !accept, !challenge',
-                '📊 Info: !points, !followage, !uptime, !time, !watchtime, !stats',
-                '🏆 Leaders: !leader, !pleader, !wleader, !cleader, !bleader',
-                '🔧 Type !admin for mod commands'
-            ];
-            
-            for (const line of cmds) {
-                await sendChatMessage(line, 'broadcaster').catch(() => {});
-                await new Promise(r => setTimeout(r, 500));
-            }
+            const cmdSummary = '🎮 Fun: !hug,!boop,!cuddle,!dance,!highfive,!lurk,!unlurk | 🎲 Games: !gamble,!roll,!double,!coinflip | 🃏 Pokemon: !pack,!collection,!show <card>,!trade,!offer,!accept,!challenge | 📊 Info: !points,!followage,!uptime,!time,!watchtime,!stats | 🏆 Leaders: !leader,!pleader,!wleader,!cleader,!bleader | 🔧 Type !admin for mod commands';
+            await sendChatMessage(cmdSummary, 'broadcaster').catch(() => {});
             return;
         }
         
         // Handle !admin
         if (actualMessage.toLowerCase() === '!admin') {
             if (tags.mod || tags.badges?.broadcaster) {
-                const adminCmds = [
-                    '🔧 Admin Commands:',
-                    '!so <user> - Shoutout',
-                    '!setgame <game> - Change game',
-                    '!settitle <title> - Change title',
-                    '!raidmessage <msg> - Set raid message',
-                    '!greetingmode - Toggle AI greetings',
-                    '!welcomemode - Toggle welcome display',
-                    '!clipmode - Toggle clip source',
-                    '!brb / !back - BRB mode'
-                ];
-                
-                for (const line of adminCmds) {
-                    await sendChatMessage(line, 'broadcaster').catch(() => {});
-                    await new Promise(r => setTimeout(r, 500));
-                }
+                const adminSummary = '🔧 Admin: !so <user>, !setgame <game>, !settitle <title>, !raidmessage <msg>, !greetingmode, !welcomemode, !clipmode, !brb, !back';
+                await sendChatMessage(adminSummary, 'broadcaster').catch(() => {});
             } else {
                 await sendChatMessage(`@${actualUsername}, only mods can view admin commands!`, 'broadcaster').catch(() => {});
             }
@@ -1255,10 +1231,21 @@ If no good match, respond with: Could not find matching user`;
                 return;
             }
             
-            const botName = (global as any).botName || 'Athena';
-            let mentionsBot = lowerMessage.includes(`@${botUsername.toLowerCase()}`) || 
-                               lowerMessage.includes(botName.toLowerCase()) || 
-                               lowerMessage.includes(`hey ${botName.toLowerCase()}`);
+            const configuredBotName = (() => {
+                try {
+                    return getAIConfig().botName || '';
+                } catch {
+                    return '';
+                }
+            })();
+            const botName = ((global as any).botName || configuredBotName || 'AI Bot').trim();
+            const mentionTriggers = [
+                `@${botUsername.toLowerCase()}`,
+                botUsername.toLowerCase(),
+                botName.toLowerCase(),
+                `hey ${botName.toLowerCase()}`
+            ].filter(Boolean);
+            let mentionsBot = mentionTriggers.some(trigger => lowerMessage.includes(trigger));
             
             // Remove hardcoded Athena check - only use dynamic bot name
             if (mentionsBot) {
@@ -1286,13 +1273,6 @@ If no good match, respond with: Could not find matching user`;
                 try {
                     console.log('[Dispatcher] Calling chat-with-memory API...');
                     
-                    // Get Discord AI chat channel ID
-                    const aiChatChannelId = process.env.NEXT_PUBLIC_DISCORD_AI_CHAT_CHANNEL_ID;
-                    if (!aiChatChannelId) {
-                        console.error('[Dispatcher] Discord AI chat channel not configured');
-                        return;
-                    }
-                    
                     // Check if this is an interest-based response
                     const isInterestResponse = (global as any).isInterestResponse;
                     const detectedInterest = (global as any).detectedInterest;
@@ -1310,8 +1290,7 @@ If no good match, respond with: Could not find matching user`;
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             username: actualUsername,
-                            message: messageToSend,
-                            channelId: aiChatChannelId
+                            message: messageToSend
                         })
                     });
                     

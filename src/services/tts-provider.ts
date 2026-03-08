@@ -45,7 +45,7 @@ export function getTTSConfig(): TTSConfig {
 let lastTTSCall = 0;
 const TTS_RATE_LIMIT = 2000; // 2 seconds between TTS calls
 
-export async function generateTTS(text: string): Promise<string> {
+export async function generateTTS(text: string, voiceOverride?: string): Promise<string> {
   // Rate limiting to prevent 429 errors
   const now = Date.now();
   const timeSinceLastCall = now - lastTTSCall;
@@ -55,7 +55,10 @@ export async function generateTTS(text: string): Promise<string> {
   }
   lastTTSCall = Date.now();
   
-  const config = getTTSConfig();
+  const baseConfig = getTTSConfig();
+  const config: TTSConfig = voiceOverride
+    ? { ...baseConfig, voice: voiceOverride }
+    : baseConfig;
   
   if (!config.apiKey) {
     throw new Error(`No API key configured for ${config.provider} TTS`);

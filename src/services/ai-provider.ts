@@ -15,7 +15,7 @@ export function getAIConfig(): AIConfig {
   
   const provider = (config.AI_PROVIDER as AIProvider) || 'gemini';
   const personalityName = config.AI_PERSONALITY_NAME || 'Commander';
-  const botName = config.AI_BOT_NAME || 'Athena';
+  const botName = config.AI_BOT_NAME || 'AI Bot';
   
   let apiKey = '';
   let model = '';

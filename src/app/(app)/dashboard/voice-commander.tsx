@@ -664,8 +664,8 @@ export function VoiceCommander({ variant = 'card', className }: VoiceCommanderPr
         }
 
         // For Twitch/Discord modes, only send AI response if AI name is mentioned
-        const botName = localStorage.getItem('bot_name') || (global as any).botName || 'Athena';
-        const botUsername = userConfig.TWITCH_BOT_USERNAME || 'athenabot87';
+        const botName = localStorage.getItem('bot_name') || (global as any).botName || 'AI Bot';
+        const botUsername = userConfig.TWITCH_BOT_USERNAME || 'streamweaverbot';
         const aiTriggers = [botName.toLowerCase(), botUsername.toLowerCase(), `@${botUsername.toLowerCase()}`];
         const hasAiTrigger = aiTriggers.some(trigger => lowerTranscription.includes(trigger));
         
@@ -1107,7 +1107,7 @@ export function VoiceCommander({ variant = 'card', className }: VoiceCommanderPr
                         <h4 className="font-medium mb-1 text-xs truncate">History</h4>
                         <div className="space-y-1 max-h-16 overflow-y-auto">
                             {messages.slice(0, 3).map(msg => {
-                                const botName = localStorage.getItem('bot_name') || 'Athena';
+                                const botName = localStorage.getItem('bot_name') || 'AI Bot';
                                 const isAiMessage = msg.speaker === 'ai-input' || msg.text.toLowerCase().includes(botName.toLowerCase());
                                 return (
                                     <div key={msg.id} className="text-xs text-muted-foreground p-1 bg-muted/50 rounded flex gap-1 items-center">
@@ -1155,4 +1155,3 @@ export function VoiceCommander({ variant = 'card', className }: VoiceCommanderPr
         </Card>
     );
 }
-

@@ -44,6 +44,8 @@ export default function AvatarOverlayPage() {
         const savedTalkingFile = localStorage.getItem('avatar_talking_file');
         const savedType = localStorage.getItem('avatar_type');
         const savedDisplayMode = localStorage.getItem('avatar_display_mode') || 'auto';
+        const savedIdleAnimation = localStorage.getItem('bot_idle_animation');
+        const savedTalkingAnimation = localStorage.getItem('bot_talking_animation');
         
         console.log('[Avatar Overlay] Loading settings:', { savedIdleFile, savedTalkingFile, savedType, savedDisplayMode });
         
@@ -59,6 +61,22 @@ export default function AvatarOverlayPage() {
         } else if (savedDisplayMode === 'always') {
             setAvatarState(prev => ({ ...prev, isVisible: true }));
         }
+
+        // Load Lottie animation JSON if available
+        if (savedIdleAnimation) {
+            try {
+                setIdleAnimationData(JSON.parse(savedIdleAnimation));
+            } catch (error) {
+                console.warn('[Avatar Overlay] Failed to parse idle animation JSON:', error);
+            }
+        }
+        if (savedTalkingAnimation) {
+            try {
+                setTalkingAnimationData(JSON.parse(savedTalkingAnimation));
+            } catch (error) {
+                console.warn('[Avatar Overlay] Failed to parse talking animation JSON:', error);
+            }
+        }
         
         // Connect to WebSocket for real-time updates
         const connectWebSocket = () => {
@@ -69,7 +87,13 @@ export default function AvatarOverlayPage() {
             };
             
             ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
+                let data: any;
+                try {
+                    data = JSON.parse(event.data as string);
+                } catch (error) {
+                    console.warn('[Avatar Overlay] Ignoring non-JSON websocket payload');
+                    return;
+                }
                 console.log('[Avatar Overlay] Received:', data.type);
                 
                 if (data.type === 'update-avatar-settings') {
@@ -183,7 +207,7 @@ export default function AvatarOverlayPage() {
                     <div className={cn("absolute inset-0 transition-opacity duration-200", !isIdle ? 'opacity-100' : 'opacity-0')}>
                         <Lottie 
                             lottieRef={talkingLottieRef}
-                            animationData={talkingAnimationData} 
+                            animationData={talkingAnimationData || idleAnimationData} 
                             loop={false}
                             autoplay={true}
                             onComplete={() => {

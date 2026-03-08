@@ -6,6 +6,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { setBrowserSource } from './obs';
+import { getAppConfig } from '../lib/app-config';
 
 const OVERLAY_DIR = path.resolve(process.cwd(), 'data', 'overlays');
 
@@ -16,38 +17,45 @@ interface OverlayConfig {
   position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center';
 }
 
-const OVERLAYS: Record<string, OverlayConfig> = {
-  gamble: {
-    scene: process.env.GAMBLE_OVERLAY_SCENE || 'Alerts',
-    source: process.env.GAMBLE_OVERLAY_SOURCE || 'gamble',
-    duration: 5000,
-    position: 'center'
-  },
-  'space-mountain': {
-    scene: process.env.GAMBLE_OVERLAY_SCENE || 'Alerts',
-    source: 'space-mountain-overlay',
-    duration: 6000,
-    position: 'center'
-  },
-  'classic-gamble': {
-    scene: process.env.GAMBLE_OVERLAY_SCENE || 'Alerts',
-    source: 'classic-gamble-overlay',
-    duration: 5000,
-    position: 'center'
-  },
-  notification: {
-    scene: process.env.NOTIFICATION_SCENE || 'Alerts',
-    source: 'notification-overlay',
-    duration: 3000,
-    position: 'top-right'
-  }
-};
+async function getOverlaysConfig(): Promise<Record<string, OverlayConfig>> {
+  const cfg = await getAppConfig();
+  const gambleScene = cfg.gambleOverlayScene || process.env.GAMBLE_OVERLAY_SCENE || 'Alerts';
+  const gambleSource = cfg.gambleOverlaySource || process.env.GAMBLE_OVERLAY_SOURCE || 'gamble';
+
+  return {
+    gamble: {
+      scene: gambleScene,
+      source: gambleSource,
+      duration: 5000,
+      position: 'center'
+    },
+    'space-mountain': {
+      scene: gambleScene,
+      source: 'space-mountain-overlay',
+      duration: 6000,
+      position: 'center'
+    },
+    'classic-gamble': {
+      scene: gambleScene,
+      source: 'classic-gamble-overlay',
+      duration: 5000,
+      position: 'center'
+    },
+    notification: {
+      scene: process.env.NOTIFICATION_SCENE || 'Alerts',
+      source: 'notification-overlay',
+      duration: 3000,
+      position: 'top-right'
+    }
+  };
+}
 
 export async function showOverlay(
   type: string,
   data: any
 ): Promise<void> {
-  const config = OVERLAYS[type];
+  const overlays = await getOverlaysConfig();
+  const config = overlays[type];
   if (!config) {
     console.warn(`[Overlay] Unknown overlay type: ${type}`);
     return;
@@ -85,5 +93,11 @@ export async function getOverlayData(type: string): Promise<any> {
 }
 
 export function getOverlayConfig(type: string): OverlayConfig | null {
-  return OVERLAYS[type] || null;
+  const fallback: Record<string, OverlayConfig> = {
+    gamble: { scene: 'Alerts', source: 'gamble', duration: 5000, position: 'center' },
+    'space-mountain': { scene: 'Alerts', source: 'space-mountain-overlay', duration: 6000, position: 'center' },
+    'classic-gamble': { scene: 'Alerts', source: 'classic-gamble-overlay', duration: 5000, position: 'center' },
+    notification: { scene: 'Alerts', source: 'notification-overlay', duration: 3000, position: 'top-right' },
+  };
+  return fallback[type] || null;
 }

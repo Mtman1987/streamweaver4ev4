@@ -9,7 +9,7 @@ export default function TTSPlayer() {
   useEffect(() => {
     const checkForUpdate = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:3100/api/tts/current');
+        const response = await fetch('/api/tts/current');
         if (response.ok) {
           const data = await response.json();
           if (data.audioUrl && data.audioUrl !== lastUrlRef.current) {

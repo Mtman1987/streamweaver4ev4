@@ -3,6 +3,7 @@ import { setScene, getCurrentScene, setBrowserSource } from './obs';
 import { readJsonFile, writeJsonFile } from './storage';
 import { getStoredTokens, ensureValidToken } from '../lib/token-utils.server';
 import { readUserConfig } from '../lib/user-config';
+import { getAppConfig } from '../lib/app-config';
 import { getTwitchUser } from './twitch';
 
 let isPlaying = false;
@@ -94,8 +95,9 @@ export async function startBRB(broadcasterName: string): Promise<void> {
   isPlaying = true;
   stopRequested = false;
   
-  const scene = process.env.BRB_SCENE || 'BRB';
-  const source = process.env.BRB_BROWSER_SOURCE || 'ClipPlayer';
+  const cfg = await getAppConfig();
+  const scene = cfg.brbScene || process.env.BRB_SCENE || 'BRB';
+  const source = cfg.brbBrowserSource || process.env.BRB_BROWSER_SOURCE || 'ClipPlayer';
   
   console.log(`[BRB] Using scene: "${scene}", source: "${source}"`);
   

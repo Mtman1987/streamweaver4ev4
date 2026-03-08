@@ -27,6 +27,7 @@ export interface AppConfig {
   brbBrowserSource?: string;
   gambleOverlayScene?: string;
   gambleOverlaySource?: string;
+  shoutoutIntroMessage?: string;
   
   // Discord Configuration (optional)
   discordLogChannelId?: string;
@@ -60,6 +61,7 @@ const DEFAULTS = {
   brbBrowserSource: 'ClipPlayer',
   gambleOverlayScene: 'Alerts',
   gambleOverlaySource: 'gamble',
+  shoutoutIntroMessage: 'Shoutout: go check out @{displayName} at https://twitch.tv/{displayName}',
   
   // TTS defaults
   useTtsPlayer: true,

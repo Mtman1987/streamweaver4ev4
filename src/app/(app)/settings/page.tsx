@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 
 interface AppConfig {
   twitchClientId?: string;
@@ -26,6 +26,7 @@ interface AppConfig {
   brbBrowserSource?: string;
   gambleOverlayScene?: string;
   gambleOverlaySource?: string;
+  shoutoutIntroMessage?: string;
   discordLogChannelId?: string;
   discordAiChatChannelId?: string;
   discordWebhookUrl?: string;
@@ -35,12 +36,17 @@ interface AppConfig {
 }
 
 export default function SettingsPage() {
+  const { toast } = useToast();
   const [config, setConfig] = useState<AppConfig>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [overlayBaseUrl, setOverlayBaseUrl] = useState('');
 
   useEffect(() => {
     loadConfig();
+    if (typeof window !== 'undefined') {
+      setOverlayBaseUrl(window.location.origin);
+    }
   }, []);
 
   const loadConfig = async () => {
@@ -67,13 +73,13 @@ export default function SettingsPage() {
       });
 
       if (response.ok) {
-        toast.success('Settings saved successfully');
+        toast({ title: 'Settings saved successfully' });
       } else {
         throw new Error('Failed to save settings');
       }
     } catch (error) {
       console.error('Failed to save config:', error);
-      toast.error('Failed to save settings');
+      toast({ variant: 'destructive', title: 'Failed to save settings' });
     } finally {
       setSaving(false);
     }
@@ -82,6 +88,31 @@ export default function SettingsPage() {
   const updateConfig = (key: keyof AppConfig, value: string | boolean) => {
     setConfig(prev => ({ ...prev, [key]: value }));
   };
+
+  const copyToClipboard = async (value: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      toast({ title: 'Copied to clipboard' });
+    } catch {
+      toast({ variant: 'destructive', title: 'Copy failed' });
+    }
+  };
+
+  const overlayUrls = [
+    '/overlay/avatar',
+    '/shoutout-player',
+    '/brb-player',
+    '/tts-player',
+    '/gamble-overlay',
+    '/classic-gamble-overlay',
+    '/pokemon-pack-overlay',
+    '/pokemon-collection-overlay',
+    '/pokemon-trade-overlay',
+    '/gym-battle-overlay',
+  ].map((path) => ({
+    path,
+    url: `${overlayBaseUrl || 'http://127.0.0.1:3100'}${path}`,
+  }));
 
   if (loading) return <div>Loading...</div>;
 
@@ -262,12 +293,55 @@ export default function SettingsPage() {
               </div>
 
               <div>
+                <Label htmlFor="shoutoutIntroMessage">Shoutout Intro Message</Label>
+                <Input
+                  id="shoutoutIntroMessage"
+                  value={config.shoutoutIntroMessage || ''}
+                  onChange={(e) => updateConfig('shoutoutIntroMessage', e.target.value)}
+                  placeholder="Shoutout: go check out @{displayName} at {url}"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Tokens: <code>{'{displayName}'}</code>, <code>{'{username}'}</code>, <code>{'{url}'}</code>
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="brbScene">BRB Scene</Label>
+                <Input
+                  id="brbScene"
+                  value={config.brbScene || ''}
+                  onChange={(e) => updateConfig('brbScene', e.target.value)}
+                  placeholder="BRB"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="brbBrowserSource">BRB Browser Source</Label>
+                <Input
+                  id="brbBrowserSource"
+                  value={config.brbBrowserSource || ''}
+                  onChange={(e) => updateConfig('brbBrowserSource', e.target.value)}
+                  placeholder="ClipPlayer"
+                />
+              </div>
+
+              <div>
                 <Label htmlFor="gambleOverlayScene">Gamble Overlay Scene</Label>
                 <Input
                   id="gambleOverlayScene"
                   value={config.gambleOverlayScene || ''}
                   onChange={(e) => updateConfig('gambleOverlayScene', e.target.value)}
                   placeholder="Alerts"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="gambleOverlaySource">Gamble Overlay Source</Label>
+                <Input
+                  id="gambleOverlaySource"
+                  value={config.gambleOverlaySource || ''}
+                  onChange={(e) => updateConfig('gambleOverlaySource', e.target.value)}
+                  placeholder="gamble"
                 />
               </div>
 
@@ -288,6 +362,18 @@ export default function SettingsPage() {
                   onChange={(e) => updateConfig('defaultTtsVoice', e.target.value)}
                   placeholder="Algieba"
                 />
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <Label>Overlay URLs (add these as OBS Browser Sources)</Label>
+                {overlayUrls.map((item) => (
+                  <div key={item.path} className="flex gap-2 items-center">
+                    <Input value={item.url} readOnly />
+                    <Button type="button" variant="outline" onClick={() => copyToClipboard(item.url)}>
+                      Copy
+                    </Button>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>

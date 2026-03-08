@@ -3,6 +3,7 @@ import { sendChatMessage } from './twitch';
 import { sendDiscordMessage } from './discord';
 import { textToSpeech } from '../ai/flows/text-to-speech';
 import { canShoutoutUser, recordShoutout } from './welcome-wagon-tracker';
+import { getAppConfig } from '../lib/app-config';
 import * as fs from 'fs/promises';
 import { resolve } from 'path';
 
@@ -36,7 +37,12 @@ interface TwitchClip {
 // ============================
 
 async function sendBroadcasterWelcome(displayName: string): Promise<void> {
-    const msg = `Hey @${displayName} just flew in from the cosmos — https://twitch.tv/${displayName}`;
+    const cfg = await getAppConfig();
+    const template = cfg.shoutoutIntroMessage || 'Shoutout: go check out @{displayName} at https://twitch.tv/{displayName}';
+    const msg = template
+      .replaceAll('{displayName}', displayName)
+      .replaceAll('{username}', displayName.toLowerCase())
+      .replaceAll('{url}', `https://twitch.tv/${displayName}`);
     await sendChatMessage(msg, 'broadcaster');
 }
 
@@ -109,8 +115,9 @@ async function playClip(clip: TwitchClip, displayName: string, profileImage: str
     
     const playerUrl = `http://127.0.0.1:3100/shoutout-player?user=${encodeURIComponent(displayName)}&image=${encodeURIComponent(profileImage)}&video=${encodeURIComponent(embedURL)}&thumbnail_url=${encodeURIComponent(clip.thumbnailUrl)}`;
     
-    const sceneName = process.env.SHOUTOUT_SCENE || 'Shoutout';
-    const sourceName = process.env.SHOUTOUT_BROWSER_SOURCE || 'Shoutout-Player';
+    const cfg = await getAppConfig();
+    const sceneName = cfg.shoutoutScene || process.env.SHOUTOUT_SCENE || 'Shoutout';
+    const sourceName = cfg.shoutoutBrowserSource || process.env.SHOUTOUT_BROWSER_SOURCE || 'Shoutout-Player';
     
     console.log(`[WalkOn] Scene: "${sceneName}", Source: "${sourceName}"`);
     console.log('[WalkOn] Opening shoutout player:', playerUrl);
