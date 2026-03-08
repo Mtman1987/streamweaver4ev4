@@ -4,6 +4,11 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   turbopack: {},
+  logging: {
+    fetches: {
+      fullUrl: false,
+    },
+  },
 }
 
 module.exports = nextConfig

@@ -2,7 +2,7 @@
   "id": "3b410cb9-0003-45be-850b-b689e2132d13",
   "name": "~yup",
   "command": "!yup",
-  "enabled": false,
+  "enabled": true,
   "description": "Imported from Streamer.bot: ~yup",
   "cooldown": {
     "global": 0,

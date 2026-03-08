@@ -2,7 +2,7 @@
   "id": "4126ecd0-ca0f-4cfa-9496-7e18849077da",
   "name": "!so",
   "command": "!so",
-  "enabled": false,
+  "enabled": true,
   "description": "Imported from Streamer.bot: !so",
   "cooldown": {
     "global": 1,

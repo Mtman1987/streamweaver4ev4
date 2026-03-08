@@ -25,7 +25,7 @@
     "setup": "npm run health-check",
     "postinstall": "node scripts/bootstrap-runtime.js",
     "streamweaver": "concurrently --names \"NEXT,SERVER,ELECTRON\" --prefix-colors \"blue,green,magenta\" \"npm:dev:next\" \"npm:dev:ws\" \"npm:electron:dev\"",
-    "streamweaver:simple": "concurrently --names \"SW2-NEXT,SW2-SERVER\" --prefix-colors \"blue,green\" \"npm:dev:next\" \"npm:dev:ws\"",
+    "streamweaver:simple": "cross-env WS_PORT=8090 npx tsx server.ts",
     "genkit:dev": "echo 'Genkit disabled - not needed for core functionality'"
   },
   "dependencies": {
