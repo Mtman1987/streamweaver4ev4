@@ -62,6 +62,32 @@ export default function AvatarOverlayPage() {
             setAvatarState(prev => ({ ...prev, isVisible: true }));
         }
 
+        // OBS browser source has separate localStorage. Load server-persisted avatar settings too.
+        fetch('/api/avatars?type=settings')
+            .then((res) => res.ok ? res.json() : null)
+            .then((payload) => {
+                const data = payload?.data;
+                if (!data) return;
+                const serverType = (data.animationType === 'json' ? 'lottie' : data.animationType) as 'lottie' | 'gif' | 'mp4';
+                setAvatarState(prev => ({
+                    ...prev,
+                    animationType: serverType || prev.animationType,
+                    idleUrl: data.idleFile ? `/avatars/${data.idleFile}` : prev.idleUrl,
+                    talkingUrl: data.talkingFile ? `/avatars/${data.talkingFile}` : prev.talkingUrl,
+                    isVisible: savedDisplayMode === 'always' || prev.isVisible,
+                }));
+
+                if (serverType === 'lottie') {
+                    if (data.idleFile) {
+                        fetch(`/avatars/${data.idleFile}`).then(r => r.json()).then(setIdleAnimationData).catch(() => {});
+                    }
+                    if (data.talkingFile) {
+                        fetch(`/avatars/${data.talkingFile}`).then(r => r.json()).then(setTalkingAnimationData).catch(() => {});
+                    }
+                }
+            })
+            .catch(() => {});
+
         // Load Lottie animation JSON if available
         if (savedIdleAnimation) {
             try {

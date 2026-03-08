@@ -25,16 +25,16 @@ if not exist "node_modules" (
     )
 )
 
-echo Starting StreamWeaver server...
+echo Starting StreamWeaver dashboard + server...
 echo.
-echo Dashboard: http://localhost:3100
+echo Dashboard: http://127.0.0.1:3100
 echo WebSocket: ws://127.0.0.1:8090
 echo.
 echo Press Ctrl+C to stop
 echo.
 
-REM Start the server using npm script
-npm run dev:ws
+REM Start dashboard + server together
+npm run streamweaver:simple
 
 REM Keep window open if there's an error
 if errorlevel 1 (

@@ -27,14 +27,24 @@ const BLACKLISTED_BOTS = [
 
 async function loadWelcomeWagonData(): Promise<WelcomeWagonData> {
   try {
-    const data = await fs.readFile(WELCOME_WAGON_PATH, 'utf-8');
-    return JSON.parse(data);
+    const raw = await fs.readFile(WELCOME_WAGON_PATH, 'utf-8');
+    const parsed = JSON.parse(raw) as Partial<WelcomeWagonData> | null;
+    const shoutouts =
+      parsed?.shoutouts && typeof parsed.shoutouts === 'object'
+        ? parsed.shoutouts
+        : {};
+    const excludedUsers = Array.isArray(parsed?.excludedUsers)
+      ? parsed!.excludedUsers.filter((u): u is string => typeof u === 'string').map((u) => u.toLowerCase())
+      : [];
+
+    return { shoutouts, excludedUsers };
   } catch {
     return { shoutouts: {}, excludedUsers: [] };
   }
 }
 
 async function saveWelcomeWagonData(data: WelcomeWagonData): Promise<void> {
+  await fs.mkdir(resolve(process.cwd(), 'tokens'), { recursive: true });
   await fs.writeFile(WELCOME_WAGON_PATH, JSON.stringify(data, null, 2));
 }
 
