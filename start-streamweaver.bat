@@ -25,7 +25,7 @@ if not exist "node_modules" (
     )
 )
 
-echo Starting StreamWeaver dashboard + server...
+echo Starting StreamWeaver server...
 echo.
 echo Dashboard: http://127.0.0.1:3100
 echo WebSocket: ws://127.0.0.1:8090
@@ -33,8 +33,9 @@ echo.
 echo Press Ctrl+C to stop
 echo.
 
-REM Start dashboard + server together
-npm run streamweaver:simple
+REM Set environment variable and start server
+set WS_PORT=8090
+npx tsx server.ts
 
 REM Keep window open if there's an error
 if errorlevel 1 (

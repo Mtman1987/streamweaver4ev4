@@ -19,8 +19,12 @@ export function getUserConfigPath(): string {
 
 export function readUserConfigSync(): Partial<UserConfig> {
   try {
+    console.log('[UserConfig] Reading from:', USER_CONFIG_PATH);
+    console.log('[UserConfig] process.cwd():', process.cwd());
+    console.log('[UserConfig] File exists:', fs.existsSync(USER_CONFIG_PATH));
     if (!fs.existsSync(USER_CONFIG_PATH)) return {};
     const raw = fs.readFileSync(USER_CONFIG_PATH, 'utf8');
+    console.log('[UserConfig] Raw content length:', raw.length);
     const parsed = JSON.parse(raw);
     if (!parsed || typeof parsed !== 'object') return {};
 
@@ -78,12 +82,17 @@ export async function isUserConfigComplete(): Promise<boolean> {
 export function applyUserConfigToProcessEnvSync(): void {
   try {
     const cfg = readUserConfigSync();
+    console.log('[UserConfig] Applying to process.env, keys:', Object.keys(cfg).join(', '));
     for (const [key, value] of Object.entries(cfg)) {
       if (!value) continue;
       if (process.env[key] == null || process.env[key] === '') {
         process.env[key] = value;
+        console.log(`[UserConfig] Set process.env.${key}`);
+      } else {
+        console.log(`[UserConfig] Skipped ${key} (already set in env)`);
       }
     }
+    console.log('[UserConfig] EDENAI_API_KEY in process.env:', !!process.env.EDENAI_API_KEY);
   } catch (error) {
     console.warn('Failed to apply user config:', error);
   }

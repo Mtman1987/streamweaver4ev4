@@ -12,6 +12,10 @@ export interface AIConfig {
 
 export function getAIConfig(): AIConfig {
   const config = readUserConfigSync();
+  console.log('[AIConfig] Config keys:', Object.keys(config).join(', '));
+  console.log('[AIConfig] AI_PROVIDER:', config.AI_PROVIDER);
+  console.log('[AIConfig] EDENAI_API_KEY exists:', !!config.EDENAI_API_KEY);
+  console.log('[AIConfig] AI_BOT_NAME:', config.AI_BOT_NAME);
   
   const provider = (config.AI_PROVIDER as AIProvider) || 'gemini';
   const personalityName = config.AI_PERSONALITY_NAME || 'Commander';
@@ -70,7 +74,18 @@ async function generateGeminiResponse(prompt: string, systemPrompt: string = '',
   });
   
   const data = await response.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'AI response failed';
+  
+  if (!response.ok) {
+    console.error('[Gemini] API Error:', response.status, JSON.stringify(data));
+    return 'AI response failed';
+  }
+  
+  if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+    console.error('[Gemini] Unexpected response format:', JSON.stringify(data));
+    return 'AI response failed';
+  }
+  
+  return data.candidates[0].content.parts[0].text;
 }
 
 async function generateEdenAIResponse(prompt: string, systemPrompt: string = '', config: AIConfig): Promise<string> {
@@ -93,7 +108,18 @@ async function generateEdenAIResponse(prompt: string, systemPrompt: string = '',
   });
   
   const data = await response.json();
-  return data.choices?.[0]?.message?.content || 'AI response failed';
+  
+  if (!response.ok) {
+    console.error('[EdenAI] API Error:', response.status, JSON.stringify(data));
+    return 'AI response failed';
+  }
+  
+  if (!data.choices?.[0]?.message?.content) {
+    console.error('[EdenAI] Unexpected response format:', JSON.stringify(data));
+    return 'AI response failed';
+  }
+  
+  return data.choices[0].message.content;
 }
 
 async function generateOpenAIResponse(prompt: string, systemPrompt: string = '', config: AIConfig): Promise<string> {
@@ -115,5 +141,16 @@ async function generateOpenAIResponse(prompt: string, systemPrompt: string = '',
   });
   
   const data = await response.json();
-  return data.choices?.[0]?.message?.content || 'AI response failed';
+  
+  if (!response.ok) {
+    console.error('[OpenAI] API Error:', response.status, JSON.stringify(data));
+    return 'AI response failed';
+  }
+  
+  if (!data.choices?.[0]?.message?.content) {
+    console.error('[OpenAI] Unexpected response format:', JSON.stringify(data));
+    return 'AI response failed';
+  }
+  
+  return data.choices[0].message.content;
 }
